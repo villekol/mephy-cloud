@@ -6,7 +6,7 @@ a = 2; % op.nrojen viimeiset merkit 2 ja 3
 % vastaavat kokojen 5*a, 10*a ja 20*a saturaatiosuhteita
 
 SRs = [1.7196 1.2726 1.1203];   % Saturaatiosuhteet
-N = 10000 * 1e-6;               % Hiukkaspitoisuus (#/m^3)
+N = 10000 * 1e+6;               % Hiukkaspitoisuus (#/m^3)
 tmax = 4;                       % Mallinnetaan aikavälillä 0-4s
 T = 296.15;                     % Lämpötila (K)
 Psw = tasapainoPsw(T);          % Kylläinen höyrynpaine (Pa)
