@@ -1,11 +1,9 @@
-% Ratkaise saturaatiosuhteet, sekä adiabaattisessa laajenemisessa
+function [SR,y,deltaP] = laitteistoparametrit(dp)
+
+% Ratkaise saturaatiosuhteet, sekï¿½ adiabaattisessa laajenemisessa
 % vaadittavat painesuhteet ja -erot.
 
-a = 2; % op.nrojen viimeiset merkit 2 ja 3
-
-dp = a * [5 10 20 50 100] * 1e-9; % hiukkaskoot, m
-
-Ti = 23 + 273.15; % alkulämpötila, K
+Ti = 23 + 273.15; % alkulï¿½mpï¿½tila, K
 Pf = 990 * 1e-3 * 1e5; % loppupaine, Pa
 gamma = 1.4; % ilman adiabaattivakio
 
@@ -26,9 +24,11 @@ for i = 1:length(dp)
     y(i) = fzero(@(x) f(x,koko),5);
 end
 
-% nyt y-vektori sisältää painesuhteet Pf/Pi
+% nyt y-vektori sisï¿½ltï¿½ï¿½ painesuhteet Pf/Pi
 % ratkaistaan paine-erot Pi - Pf
 deltaP = (Pf ./ y - Pf) * 1e-5 * 1e3;
 
 % ratkaistaan painesuhteita vastaavat saturaatiosuhteet
-SR = supersaturaatio(dp,Ti * y);
+SR = supersaturaatio(dp,Ti * y.^(1 - 1/gamma));
+
+end

@@ -1,17 +1,23 @@
 %% Hiukkasen koon muutoksen mallinnus
 
+close all
+clear variables
+
 a = 2; % op.nrojen viimeiset merkit 2 ja 3
 
-% Mallinnetaan alkujaan 20*a (nm) kokoista hiukkasta höyrynpaineissa, jotka
+% Mallinnetaan alkujaan 20*a (nm) kokoista hiukkasta hï¿½yrynpaineissa, jotka
 % vastaavat kokojen 5*a, 10*a ja 20*a saturaatiosuhteita
 
-SRs = [1.7196 1.2726 1.1203];   % Saturaatiosuhteet
-N = 10000 * 1e+6;               % Hiukkaspitoisuus (#/m^3)
-tmax = 4;                       % Mallinnetaan aikavälillä 0-4s
-T = 296.15;                     % Lämpötila (K)
-Psw = tasapainoPsw(T);          % Kylläinen höyrynpaine (Pa)
+dp = a * [5 10 20 50 100] * 1e-9;
 
-P0s = SRs .* Psw;               % Alkuhöyrynpaineet (Pa)
+[kaikkiSRs,suhdeP,deltaP] = laitteistoparametrit(dp); % Saturaatiosuhteet
+SRs = kaikkiSRs(1:3);           % Saturaatiosuhteet mallinnukseen
+N = 10000 * 1e+6;               % Hiukkaspitoisuus (#/m^3)
+tmax = 4;                       % Mallinnetaan aikavï¿½lillï¿½ 0-4s
+T = 23 + 273.15;                % Lï¿½mpï¿½tila (K)
+Psw = tasapainoPsw(T);          % Kyllï¿½inen hï¿½yrynpaine (Pa)
+
+P0s = SRs .* Psw;               % Alkuhï¿½yrynpaineet (Pa)
 dp0 = 20 * a * 1e-9;            % Hiukkasen alkukoko (nm)
 
 P01 = P0s(1);
@@ -24,38 +30,32 @@ P03 = P0s(3);
 [t3,dp3,p3]=oderatkaisija(T,N,tmax,P03,dp0);
 
 figure
+set(gcf,'DefaultTextInterpreter','latex')
+
+subplot(2,1,1)
+
 hold on
-subplot(3,2,1)
-title('P1')
-plot(t1,dp1,'-k')
-xlabel('t (s)')
-ylabel('d_p (m)')
+h1 = plot(t1,dp1*1e6,'DisplayName',['$p_w$(' num2str(dp(1)*1e9) ' nm)']);
+h2 = plot(t2,dp2*1e6,'DisplayName',['$p_w$(' num2str(dp(2)*1e9) ' nm)']);
+h3 = plot(t3,dp3*1e6,'DisplayName',['$p_w$(' num2str(dp(3)*1e9) ' nm)']);
 
-subplot(3,2,2)
-plot(t1,p1,'-k')
-xlabel('t (s)')
-ylabel('P (Pa)')
+xlabel('$t$ (s)')
+ylabel('$d_p$ ($\mu$m)')
+leg1 = legend([h1 h2 h3],'Location','best');
+set(leg1,'Interpreter','latex')
 
-subplot(3,2,3)
-plot(t2,dp2,'-k')
-xlabel('t (s)')
-ylabel('d_p (m)')
+hold off
 
-subplot(3,2,4)
-plot(t2,p2,'-k')
-xlabel('t (s)')
-ylabel('P (Pa)')
+subplot(2,1,2)
 
-subplot(3,2,5)
-plot(t3,dp3,'-k')
-xlabel('t (s)')
-ylabel('d_p (m)')
+hold on
+h4 = plot(t1,p1*1e-3,'DisplayName',['$p_w$(' num2str(dp(1)*1e9) ' nm)']);
+h5 = plot(t2,p2*1e-3,'DisplayName',['$p_w$(' num2str(dp(2)*1e9) ' nm)']);
+h6 = plot(t3,p3*1e-3,'DisplayName',['$p_w$(' num2str(dp(3)*1e9) ' nm)']);
 
-subplot(3,2,6)
-plot(t3,p3,'-k')
-xlabel('t (s)')
-ylabel('P (Pa)')
+xlabel('$t$ (s)')
+ylabel('$P$ (kPa)')
+leg2 = legend([h4 h5 h6],'Location','best');
+set(leg2,'Interpreter','latex')
 
-
-
-
+hold off
