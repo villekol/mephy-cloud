@@ -3,7 +3,7 @@
 clear variables
 close all
 
-T = 13:0.1:47;
+T = 0:0.1:47;
 T = T + 273.15;
 
 psw = tasapainoPsw(T);
