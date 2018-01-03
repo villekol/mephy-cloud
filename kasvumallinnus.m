@@ -13,6 +13,7 @@ dp = a * [5 10 20 50 100] * 1e-9;
 [kaikkiSRs,suhdeP,deltaP] = laitteistoparametrit(dp); % Saturaatiosuhteet
 SRs = kaikkiSRs(1:3);           % Saturaatiosuhteet mallinnukseen
 N = 10000 * 1e+6;               % Hiukkaspitoisuus (#/m^3)
+L = 1;                          % Ekstinkitomatka (m)
 tmax = 4;                       % Mallinnetaan aikav�lill� 0-4s
 T = 23 + 273.15;                % L�mp�tila (K)
 Psw = tasapainoPsw(T);          % Kyll�inen h�yrynpaine (Pa)
@@ -32,7 +33,7 @@ P03 = P0s(3);
 figure
 set(gcf,'DefaultTextInterpreter','latex')
 
-subplot(2,1,1)
+subplot(3,1,1)
 
 hold on
 h1 = plot(t1,dp1*1e6,'DisplayName',['$p_w$(' num2str(dp(1)*1e9) ' nm)']);
@@ -43,10 +44,11 @@ xlabel('$t$ (s)')
 ylabel('$d_p$ ($\mu$m)')
 leg1 = legend([h1 h2 h3],'Location','best');
 set(leg1,'Interpreter','latex')
+set(gca,'TickLabelInterpreter','latex')
 
 hold off
 
-subplot(2,1,2)
+subplot(3,1,2)
 
 hold on
 h4 = plot(t1,p1*1e-3,'DisplayName',['$p_w$(' num2str(dp(1)*1e9) ' nm)']);
@@ -57,5 +59,60 @@ xlabel('$t$ (s)')
 ylabel('$P$ (kPa)')
 leg2 = legend([h4 h5 h6],'Location','best');
 set(leg2,'Interpreter','latex')
+set(gca,'TickLabelInterpreter','latex')
 
 hold off
+
+% ekstinktio-osuus
+
+lambda = 635 * 1e-9;
+L = 0.20;
+
+% refractive index by interpolation from Hale and Querry (1973)
+x = [600 650] * 1e-9;
+rey = [1.332 1.331];
+imy = [1.09 1.64] * 1e-8;
+n = interp1(x,rey,lambda);
+k = interp1(x,imy,lambda);
+
+m = complex(n,k);
+
+Qext1 = zeros(size(dp1));
+Qext2 = zeros(size(dp2));
+Qext3 = zeros(size(dp3));
+
+alpha1 = pi * dp1 / lambda;
+alpha2 = pi * dp2 / lambda;
+alpha3 = pi * dp3 / lambda;
+
+for i = 1:length(dp1)
+    result = Mie(m,alpha1(i));
+    Qext1(i) = result(4);
+end
+
+for i = 1:length(dp2)
+    result = Mie(m,alpha2(i));
+    Qext2(i) = result(4);
+end
+
+for i = 1:length(dp3)
+    result = Mie(m,alpha3(i));
+    Qext3(i) = result(4);
+end
+
+bext1 = pi * dp1.^2 * N .* Qext1 / 4;
+trans1 = exp(-bext1 * L);
+
+bext2 = pi * dp2.^2 * N .* Qext2 / 4;
+trans2 = exp(-bext2 * L);
+
+bext3 = pi * dp3.^2 * N .* Qext3 / 4;
+trans3 = exp(-bext3 * L);
+
+subplot(3,1,3)
+
+hold on
+
+h7 = plot(t1,trans1);
+h8 = plot(t2,trans2);
+h9 = plot(t3,trans3);
