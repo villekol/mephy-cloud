@@ -14,9 +14,10 @@ function [t,ddp, dpp] = oderatkaisija(T, N, tmax, P0, dp0)
 % ddp - hiukkasen koko hetkellä t (m)
 % dpp - paine hetkellä t (Pa)
 
+% Esimerkkikoodin mukaiset asetukset
 options = odeset('RelTol',1e-6,'AbsTol',[1e-11 0.01],'InitialStep',1e-7,'Refine',10);
 
-[t,Y] = ode15s(@(t,Y)diffsysteemi(t,Y,T,N,dp0,P0),[0 tmax],[dp0 P0],options);
+[t,Y] = ode15s(@(t,Y)diffsysteemi(Y,T,N,dp0),[0 tmax],[dp0 P0],options);
 ddp = Y(:,1);
 dpp = Y(:,2);
 

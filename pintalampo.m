@@ -1,5 +1,12 @@
 function Td = pintalampo(dp,p)
 
+% - Input
+% dp - hiukkasen halkaisija (m)
+% p - veden höyrynpaine (Pa)
+
+% - Output
+% Td - Lämpötila hiukkasen pinnalla (T)
+
 T = 23 + 273;                   % lämpötila, K
 M = (2 * 1.008 + 15.999)*1e-3;  % veden moolimassa, kg/mol
 R = 8.3144598;                  % kaasuvakio, J/mol*K
@@ -9,6 +16,7 @@ ka = 0.0257;                    % ilman lämmönjohtavuus, (W/(m*K))
 
 % Kommentoitu pois koska p pitää tuoda parametrina diffyhtälöä varten
 %p = supersaturaatio(dp,T) * tasapainoPsw(T);
+
 lambda = free_path(T,D,M);
 
 f = @(x) x - T - D*M*L/(R*ka) .* ...

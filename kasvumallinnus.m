@@ -14,6 +14,7 @@ Psw = tasapainoPsw(T);          % Kylläinen höyrynpaine (Pa)
 P0s = SRs .* Psw;               % Alkuhöyrynpaineet (Pa)
 dp0 = 20 * a * 1e-9;            % Hiukkasen alkukoko (nm)
 
+% Ratkaistaan differentiaalisysteemi kullakin alkuhöyrynpaineella
 P01 = P0s(1);
 [t1,dp1,p1]=oderatkaisija(T,N,tmax,P01,dp0);
 
@@ -23,21 +24,24 @@ P02 = P0s(2);
 P03 = P0s(3);
 [t3,dp3,p3]=oderatkaisija(T,N,tmax,P03,dp0);
 
+% Piirretään kuvaajat
 figure
 hold on
 subplot(3,2,1)
-title('P1')
 plot(t1,dp1,'-k')
+title('asd')
 xlabel('t (s)')
 ylabel('d_p (m)')
 
 subplot(3,2,2)
 plot(t1,p1,'-k')
+title('das')
 xlabel('t (s)')
 ylabel('P (Pa)')
 
 subplot(3,2,3)
 plot(t2,dp2,'-k')
+title('sda')
 xlabel('t (s)')
 ylabel('d_p (m)')
 
@@ -56,6 +60,7 @@ plot(t3,p3,'-k')
 xlabel('t (s)')
 ylabel('P (Pa)')
 
+hold off
 
 
 
