@@ -21,6 +21,7 @@ Psw = tasapainoPsw(T);          % Kyll�inen h�yrynpaine (Pa)
 P0s = SRs .* Psw;               % Alkuh�yrynpaineet (Pa)
 dp0 = 20 * a * 1e-9;            % Hiukkasen alkukoko (nm)
 
+% Ratkaistaan differentiaalisysteemi kullakin alkuh�yrynpaineella
 P01 = P0s(1);
 [t1,dp1,p1]=oderatkaisija(T,N,tmax,P01,dp0);
 
@@ -30,6 +31,7 @@ P02 = P0s(2);
 P03 = P0s(3);
 [t3,dp3,p3]=oderatkaisija(T,N,tmax,P03,dp0);
 
+% Piirret��n kuvaajat
 figure
 set(gcf,'DefaultTextInterpreter','latex')
 
@@ -51,6 +53,7 @@ hold off
 subplot(3,1,2)
 
 hold on
+
 h4 = plot(t1,p1*1e-3,'DisplayName',['$p_w$(' num2str(dp(1)*1e9) ' nm)']);
 h5 = plot(t2,p2*1e-3,'DisplayName',['$p_w$(' num2str(dp(2)*1e9) ' nm)']);
 h6 = plot(t3,p3*1e-3,'DisplayName',['$p_w$(' num2str(dp(3)*1e9) ' nm)']);
